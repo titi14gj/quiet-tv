@@ -1,0 +1,142 @@
+[
+  {
+    "key": "media",
+    "pkg": "com.helios.mediaplayer",
+    "name": "本地媒体",
+    "top": "#39c6ff",
+    "bottom": "#167bf4"
+  },
+  {
+    "key": "screen",
+    "pkg": "com.helios.screen",
+    "name": "屏幕保护",
+    "top": "#b186ff",
+    "bottom": "#7050ec"
+  },
+  {
+    "key": "cast",
+    "pkg": "cn.whaley.whaleylink",
+    "name": "投屏",
+    "top": "#42e4e0",
+    "bottom": "#13a8db"
+  },
+  {
+    "key": "apps",
+    "pkg": "com.helios.myapp",
+    "name": "应用管理",
+    "top": "#8e97ff",
+    "bottom": "#5366f1"
+  },
+  {
+    "key": "keep",
+    "pkg": "com.gotokeep.androidtv",
+    "name": "Keep",
+    "top": "#b29bd1",
+    "bottom": "#8062ab"
+  },
+  {
+    "key": "live",
+    "pkg": "com.gitv.dvb.live",
+    "name": "宽带电视",
+    "top": "#36ccff",
+    "bottom": "#167ce8"
+  },
+  {
+    "key": "store",
+    "pkg": "com.helios.appstore",
+    "name": "应用商店",
+    "top": "#50c8ff",
+    "bottom": "#3473f5"
+  },
+  {
+    "key": "clean",
+    "pkg": "com.helios.cleantools",
+    "name": "电视清理",
+    "top": "#55efc0",
+    "bottom": "#15bc9d"
+  },
+  {
+    "key": "kids",
+    "pkg": "com.helios.kids",
+    "name": "少儿",
+    "top": "#ffd16d",
+    "bottom": "#ff913e"
+  },
+  {
+    "key": "sports",
+    "pkg": "com.helios.sports",
+    "name": "体育",
+    "top": "#b5ec4b",
+    "bottom": "#5cbd25"
+  },
+  {
+    "key": "vod",
+    "pkg": "com.helios.vod",
+    "name": "影视",
+    "top": "#f296db",
+    "bottom": "#c54bac"
+  },
+  {
+    "key": "music",
+    "pkg": "com.helios.globalmusic",
+    "name": "音乐",
+    "top": "#ff8caa",
+    "bottom": "#f54879"
+  },
+  {
+    "key": "face",
+    "pkg": "com.helios.facerecognition",
+    "name": "人脸识别",
+    "top": "#6ce6e1",
+    "bottom": "#25b4ce"
+  },
+  {
+    "key": "message",
+    "pkg": "com.helios.message",
+    "name": "消息",
+    "top": "#70caff",
+    "bottom": "#388cf5"
+  },
+  {
+    "key": "guide",
+    "pkg": "com.helios.guide",
+    "name": "使用指南",
+    "top": "#ffd36b",
+    "bottom": "#f3a32c"
+  },
+  {
+    "key": "house",
+    "pkg": "com.whaley.smarthome",
+    "name": "智能家居",
+    "top": "#6de7b2",
+    "bottom": "#22bb84"
+  },
+  {
+    "key": "settings",
+    "pkg": "com.helios.setting",
+    "name": "系统设置",
+    "top": "#c9d7eb",
+    "bottom": "#8eaccf"
+  },
+  {
+    "key": "inputs",
+    "pkg": "",
+    "name": "信号源",
+    "top": "#95cfff",
+    "bottom": "#5b96ed"
+  },
+  {
+    "key": "network",
+    "pkg": "",
+    "name": "网络",
+    "top": "#64e1f4",
+    "bottom": "#1aa9e3"
+  },
+  {
+    "key": "wallpaper",
+    "pkg": "",
+    "name": "壁纸",
+    "top": "#c49aff",
+    "bottom": "#8b57ed"
+  }
+]

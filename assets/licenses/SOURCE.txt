@@ -1,0 +1,6 @@
+CleanYourTV (Gathin), MIT
+https://github.com/Gathin23/cleanyourtv
+Upstream commit 7377a9be8ca0b33af6fea006230414582fd150bd
+
+Reused/adapted: GlassView.java, pill_bg.xml, icon vector drawables, Outfit font, aurora wallpaper, banner-first card rendering and native layout/navigation techniques.
+Changes: API 21 port without AndroidX, Chinese controls, wallpaper previews, custom Dock editor, low-resolution Bilibili banner replacement, persistent focus, Whaley settings/input fallback.

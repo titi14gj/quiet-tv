@@ -1,0 +1,10 @@
+build/
+dist/
+.local/
+node_modules/
+.DS_Store
+*.jks
+*.keystore
+*.pem
+*.key
+.env

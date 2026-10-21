@@ -32,7 +32,7 @@ final class GlassSurface extends Drawable {
         p.setStrokeWidth(owner.dp(.6f));p.setColor(focused?0x42ffffff:0x16ffffff);c.drawRoundRect(inner,Math.max(0,cr-owner.dp(1.3f)),Math.max(0,cr-owner.dp(1.3f)),p);p.setStyle(Paint.Style.FILL);
     }
     public void setAlpha(int a){}public void setColorFilter(ColorFilter f){}public int getOpacity(){return PixelFormat.TRANSLUCENT;}
-    static Bitmap capture(View backdrop){if(backdrop.getWidth()==0)return null;int w=360,h=Math.max(1,(int)(360f*backdrop.getHeight()/backdrop.getWidth()));Bitmap b=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(b);c.scale(w/(float)backdrop.getWidth(),h/(float)backdrop.getHeight());backdrop.draw(c);
+    static Bitmap capture(View backdrop){if(backdrop.getWidth()==0)return null;int w=android.os.Build.VERSION.SDK_INT<21?240:360,h=Math.max(1,(int)(360f*backdrop.getHeight()/backdrop.getWidth()));Bitmap b=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);Canvas c=new Canvas(b);c.scale(w/(float)backdrop.getWidth(),h/(float)backdrop.getHeight());backdrop.draw(c);
         int[] a=new int[w*h],temp=new int[w*h];b.getPixels(a,0,w,0,0,w,h);
         for(int pass=0;pass<2;pass++){for(int y=0;y<h;y++)for(int x=0;x<w;x++){int rr=0,gg=0,bb=0,n=0;for(int k=-3;k<=3;k++){int v=a[y*w+Math.max(0,Math.min(w-1,x+k))];rr+=Color.red(v);gg+=Color.green(v);bb+=Color.blue(v);n++;}temp[y*w+x]=Color.rgb(rr/n,gg/n,bb/n);}
             for(int y=0;y<h;y++)for(int x=0;x<w;x++){int rr=0,gg=0,bb=0,n=0;for(int k=-3;k<=3;k++){int v=temp[Math.max(0,Math.min(h-1,y+k))*w+x];rr+=Color.red(v);gg+=Color.green(v);bb+=Color.blue(v);n++;}a[y*w+x]=Color.rgb(rr/n,gg/n,bb/n);}}

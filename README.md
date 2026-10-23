@@ -1,6 +1,6 @@
 # 静境 TV · Quiet TV
 
-> 当前分支为 **5.4-rc2 / 机内初始化向导候选版**，保留 API 19 兼容改动。新向导尚未完成微鲸真机全流程验证，Android 4.4 运行验证也未完成。[向导使用与限制](docs/ON_DEVICE_SETUP.zh-CN.md) · [4.4 兼容说明](docs/ANDROID44.md)。下文 5.2 的实机记录属于历史版本；稳定版本仍在 main 分支。
+> 当前分支为 **5.4-rc2 / 机内初始化向导候选版**（[下载测试 APK](https://github.com/titi14gj/quiet-tv/releases/tag/v5.4-rc2)），保留 API 19 兼容改动。新向导尚未完成微鲸真机全流程验证，Android 4.4 运行验证也未完成。[向导使用与限制](docs/ON_DEVICE_SETUP.zh-CN.md) · [4.4 兼容说明](docs/ANDROID44.md)。下文 5.2 的实机记录属于历史版本；稳定版本仍在 main 分支。
 
 给老电视做一个简洁、适合遥控器的原生桌面。借鉴 tvOS 的横向卡片、低位 Dock 与玻璃材质，保留壁纸的视觉空间。
 

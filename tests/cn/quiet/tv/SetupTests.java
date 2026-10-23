@@ -87,8 +87,34 @@ public final class SetupTests {
             if(marker){LocalAdb.Result result=adb.shell("id");check(result.exit==1&&result.output.equals("Permission denied"));check(adb.shell("id").exit==1);}else fails(()->adb.shell("id"));check(notice[0]);
         }finally{server.close();daemon.join(5000);}check(!daemon.isAlive());if(error[0]!=null)throw new AssertionError(error[0]);
     }
+    static void community()throws Exception {
+        RegisteredProfile profile=RegisteredProfile.match("Smart TV Pro","G08",31,"ignored",RegisteredProfile.TCL_FP);
+        check(profile!=null&&profile.packages.length==3);
+        check(RegisteredProfile.match("Smart TV Pro","G08",31,"ignored","new firmware")==null);
+        check(RegisteredProfile.match("Smart TV Pro","G08",30,"ignored",RegisteredProfile.TCL_FP)==null);
+        check(RegisteredProfile.match("Other","G08",31,"ignored",RegisteredProfile.TCL_FP)==null);
+        final Map<String,Integer> enabled=new HashMap<>(),records=new HashMap<>();final boolean[] deny={false},identity={true},disk={true};final int[] writes={0};
+        SetupEngine.Shell shell=c->{
+            if(c.equals("id"))return result("uid=2000(shell)");if(c.startsWith("getprop"))return result(identity[0]?RegisteredProfile.TCL_FP:"other");
+            String pkg=profile.packages[0];for(String p:profile.packages)if(c.contains(p))pkg=p;
+            if(c.startsWith("dumpsys"))return result("User 0: installed=true hidden=false enabled="+enabled.getOrDefault(pkg,0));
+            writes[0]++;check(records.containsKey(pkg));if(!deny[0]){if(c.startsWith("pm disable-user"))enabled.put(pkg,3);else if(c.startsWith("pm enable"))enabled.put(pkg,1);else if(c.startsWith("pm default-state"))enabled.put(pkg,0);}return result("ignored");
+        };
+        CommunitySetupEngine.Journal journal=new CommunitySetupEngine.Journal(){public void remember(String p,int before){if(!disk[0])throw new IllegalStateException("disk full");records.put(p,before);}public void forget(String p){records.remove(p);}};
+        CommunitySetupEngine engine=new CommunitySetupEngine(shell,journal,profile,RegisteredProfile.TCL_FP);String pkg=profile.packages[0];
+        fails(()->engine.disable(pkg));check(writes[0]==0);engine.verifyIdentity();fails(()->engine.disable("com.android.settings"));check(writes[0]==0);
+        disk[0]=false;fails(()->engine.disable(pkg));check(writes[0]==0);disk[0]=true;
+        enabled.put(pkg,3);engine.disable(pkg);check(writes[0]==0&&records.isEmpty());enabled.put(pkg,0);
+        deny[0]=true;fails(()->engine.disable(pkg));check(records.isEmpty());deny[0]=false;
+        engine.disable(pkg);check(enabled.get(pkg)==3&&records.get(pkg)==0);engine.restore(pkg,0);check(enabled.get(pkg)==0&&records.isEmpty());
+        enabled.put(pkg,1);engine.disable(pkg);check(records.get(pkg)==1);engine.restore(pkg,1);check(enabled.get(pkg)==1&&records.isEmpty());
+        identity[0]=false;fails(engine::verifyIdentity);int count=writes[0];fails(()->engine.disable(pkg));check(count==writes[0]);
+        SetupEngine.Shell okay=c->result(c.startsWith("pm path")?"package:/data/app/quiet.apk":c.contains("resolve-activity")?"priority=0 preferredOrder=0 match=0x108000\ncn.quiet.tv/.MainActivity":"Success");DefaultHomeEngine.select(okay);
+        fails(()->DefaultHomeEngine.select(c->result(c.startsWith("pm path")?"package:/data/app/quiet.apk":c.contains("resolve-activity")?"other/.Home":"Success")));
+        fails(()->DefaultHomeEngine.select(c->result(c.startsWith("pm path")?"package:/data/app/quiet.apk":c.contains("resolve-activity")?"other.cn.quiet.tv/.MainActivity":"Success")));
+    }
     public static void main(String[] args)throws Exception{
-        policy();crypto();transport(true);transport(false);
+        policy();community();crypto();transport(true);transport(false);
         ByteArrayOutputStream out=new ByteArrayOutputStream();LocalAdb.encode(out,new LocalAdb.Packet(LocalAdb.AUTH,1,0,new byte[]{1,2,3}));byte[] packet=out.toByteArray();packet[24]^=1;fails(()->LocalAdb.decode(new ByteArrayInputStream(packet)));
         fails(()->LocalAdb.decode(new ByteArrayInputStream(new byte[2])));
         System.out.println("Passed "+checks+" assertions: policy, identity, rollback, preexisting state, RSA, authorization, packet integrity and shell status.");

@@ -1,0 +1,68 @@
+# TCL Smart TV Pro (G08, G08_4K_GB, MediaTek), Europe/UK firmware, Android 12
+# Model "Smart TV Pro", device G08, fingerprint TCL/G08_4K_GB/G08:12/STT2.221228.001/AS34:user/release-keys.
+# Same G08 board family as the C755/QM6K/85RM7L/US lists, but this is the older Android 12 EU firmware:
+# no Samba-ACR ttvs build, no AirplayAPK, no hotelmenu/channelplus/e-sticker/TV+/usercenter, no Android 14
+# ad services. The US list (examples/tcl-g08-us-google-tv) applies only partially here; this list is the
+# subset that exists on this build, applied by hand with `pm disable-user --user 0`.
+#
+# Tested 21 October 2026 on one set. All 24 packages below are disabled on that set and it boots, plays
+# HDMI/Live TV and opens the source menu normally.
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/tcl-g08-eu-android12/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/tcl-g08-eu-android12/debloat.txt
+# Everything is DISABLED, not uninstalled. Comment out any line you want to keep.
+#
+# Stock launcher: com.google.android.apps.tv.launcherx (left enabled here, no custom launcher installed
+# on this set). Live TV / HDMI app: com.tcl.tv. Left enabled on purpose: com.tcl.tv, com.tcl.tvinput,
+# com.tcl.globalkeyoverlay, com.tcl.tv.tclhome_passive, com.google.android.katniss (voice), Play Services,
+# com.dolby.*; the three packages marked DO NOT DISABLE below are load-bearing, see comments.
+
+# TCL promo, push messages, help/demo apps and log capture
+com.tcl.dashboard                      # home-screen push messages
+com.tcl.messagebox
+com.tcl.exhibit                        # store demo mode
+com.tcl.hearaid
+com.tcl.ocean.instructions             # onboarding/tips overlay
+com.tcl.repairguide
+com.tcl.logkit                         # log collection
+com.tcl.browser                        # TCL light browser (Google WebView stays)
+com.tcl.smartalexa
+com.tcl.t_solo
+com.tcl.eva                            # TCL voice assistant layer (Katniss handles voice without it)
+com.tcl.magiconnectfree                # MagicConnect pairing promo
+com.tcl.gamebar
+com.tcl.UpdatePeripheral               # peripheral firmware helper
+
+# Duplicate webviews on this firmware (com.google.android.webview is the active one)
+com.tcl.android.webview
+com.iplayer.android.webview
+com.mediatek.support.webview
+
+# Mediatek casting/telemetry leftovers
+com.mediatek.airplaydaemon             # AirPlay daemon; the AirplayAPK frontend is not on this firmware
+com.mediatek.backgrounddetection
+com.mediatek.network
+
+# Google storefront and extras
+com.google.android.videos              # Play Movies storefront
+com.google.android.tts                 # TTS (left on purpose if you use voice TTS screens)
+com.google.android.apps.tv.dreamx      # photo screensaver
+com.android.printspooler
+
+# DO NOT DISABLE - verified on this set, 21 Oct 2026:
+# com.tcl.autopair   - Bluetooth remote pairing. Disable it and a remote that unpairs (battery
+#   swap, reset) can never pair again. Found by review, kept enabled on the live set.
+# com.tcl.suspension  - hosts the source-menu QuickPanel. The remote's Source key (KEYCODE_TV_INPUT, 178)
+#   goes TclShortCutKeyManager -> startService com.tcl.suspension/.DismissService
+#   (act=com.tcl.quickpanel.show.window). Disabling it makes the Source key silently dead
+#   ("Unable to start service ... not found"). Restore: pm enable com.tcl.suspension.
+# com.tcl.interactive - provides the tcl_tias_tbrowser service com.tcl.tv binds for the source/HbbTV
+#   overlay. Disabled, vendor.tcl.tvinput.extend-service spams "Passing null binder object" plus
+#   com.tcl.tbrowser NullPointerException at ~10 Hz forever.
+# com.tcl.ttvs        - same TIAS chain (and the teletext soft-keyboard IME). Disable breaks the
+#   live-TV source overlays like the two above.
+
+# Setup wizard: kept enabled here, and to be disabled only before installing a custom launcher.
+# Google TV's setup wizard claims Home (RecoveryActivity loop) once the stock launcher is disabled -
+# see launcher Troubleshooting #3. Uncomment it just before running launcher/build-and-install.sh.
+# com.google.android.tungsten.setupwraith

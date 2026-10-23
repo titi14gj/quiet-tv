@@ -11,6 +11,7 @@
 - 参考提交：7377a9be8ca0b33af6fea006230414582fd150bd。
 - 授权：MIT，完整文本为 `licenses/CleanYourTV-MIT.txt`，APK 内也保留声明。
 - 复用/适配：GlassView.java、pill_bg.xml、部分图标资源、应用图标/banner、aurora 壁纸；布局、Dock、导航与焦点机制借鉴上游后移植到 API 21。
+- 5.4-rc2 另引入提交 `5e9e4f119e405eb8bcc18296f2567c9d6a7c4217` 的 `examples/README.md` 目录数据，以及 `examples/tcl-g08-eu-android12/debloat.txt` 来源说明。目录只作社区参考；仅整理其中三项推送/消息/日志组件到独立的精确固件规则，不执行原始文本或整份清单。
 - 主要改动：旧系统原生实现、中文交互、壁纸菜单、独立应用页、焦点恢复、独立图标前景与厂商 HDMI/设置适配。
 
 ## Outfit

@@ -49,10 +49,9 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle b) {
         super.onCreate(b);
         try{light=Typeface.createFromAsset(getAssets(),"fonts/outfit-light.ttf");medium=Typeface.createFromAsset(getAssets(),"fonts/outfit-medium.ttf");}catch(Exception e){light=Typeface.create("sans-serif-light",0);medium=Typeface.create("sans-serif-medium",0);}
-        try{BitmapFactory.Options opts=new BitmapFactory.Options();opts.inPreferredConfig=Bitmap.Config.ARGB_8888;aurora=BitmapFactory.decodeStream(getAssets().open("wallpapers/aurora.jpg"),null,opts);}catch(Exception e){}
-
-        try{BitmapFactory.Options opts=new BitmapFactory.Options();opts.inPreferredConfig=Bitmap.Config.ARGB_8888;silk=BitmapFactory.decodeStream(getAssets().open("wallpapers/mac-silk.jpg"),null,opts);coast=BitmapFactory.decodeStream(getAssets().open("wallpapers/mac-coast.jpg"),null,opts);}catch(Exception e){}
-        try{lake=BitmapFactory.decodeStream(getAssets().open("wallpapers/mountain-lake.png"));}catch(Exception e){}
+        aurora=wallpaperAsset("wallpapers/aurora.jpg");
+        silk=wallpaperAsset("wallpapers/mac-silk.jpg");coast=wallpaperAsset("wallpapers/mac-coast.jpg");
+        lake=wallpaperAsset("wallpapers/mountain-lake.png");
         mode = getPreferences(0).getString("wallpaper", "glow");
         if(!getPreferences(0).getBoolean("v5wallpaper",false)){mode="lake";getPreferences(0).edit().putString("wallpaper",mode).putBoolean("v5wallpaper",true).apply();}
         showSystem = getPreferences(0).getBoolean("showSystem", false);
@@ -65,6 +64,16 @@ public class MainActivity extends Activity {
         getWindow().setFlags(1024,1024);
         getWindow().getDecorView().setSystemUiVisibility(4096|2|4);
         handler.post(tick);
+    }
+    Bitmap wallpaperAsset(String name){
+        try{
+            BitmapFactory.Options options=new BitmapFactory.Options();options.inJustDecodeBounds=true;
+            java.io.InputStream input=getAssets().open(name);try{BitmapFactory.decodeStream(input,null,options);}finally{input.close();}
+            int limit=Build.VERSION.SDK_INT<21?1280:Integer.MAX_VALUE;options.inSampleSize=1;
+            while(Math.max(options.outWidth,options.outHeight)/options.inSampleSize>limit)options.inSampleSize*=2;
+            options.inJustDecodeBounds=false;options.inPreferredConfig=Bitmap.Config.ARGB_8888;
+            input=getAssets().open(name);try{return BitmapFactory.decodeStream(input,null,options);}finally{input.close();}
+        }catch(Exception e){android.util.Log.w("QuietWallpaper","Unable to load "+name,e);return null;}
     }
     protected void onResume() { super.onResume(); discover(); build(); }
     protected void onPause() { saveFocus();if(openPopup!=null)openPopup.dismiss(); super.onPause(); }
@@ -133,11 +142,11 @@ public class MainActivity extends Activity {
         headerLp.setMargins(dp(60),dp(26),dp(70),0);root.addView(header,headerLp);
         LinearLayout left=new LinearLayout(this);left.setOrientation(1);
         header.addView(left,new LinearLayout.LayoutParams(0,-2,1));
-        greeting=text(greetingText(),12,0x99ffffff);greeting.setLetterSpacing(0);
+        greeting=text(greetingText(),12,0x99ffffff);AndroidCompat.letterSpacing(greeting,0);
         left.addView(greeting);
         LinearLayout timeRow=new LinearLayout(this);timeRow.setGravity(Gravity.CENTER_VERTICAL);left.addView(timeRow);
         clock=text(new SimpleDateFormat("HH:mm",Locale.CHINA).format(new Date()),52,Color.WHITE);
-        clock.setTypeface(light);clock.setLetterSpacing(-.04f);clock.setIncludeFontPadding(false);timeRow.addView(clock);
+        clock.setTypeface(light);AndroidCompat.letterSpacing(clock,-.04f);clock.setIncludeFontPadding(false);timeRow.addView(clock);
         View divider=new View(this);divider.setBackgroundColor(0x40ffffff);
         LinearLayout.LayoutParams dl=new LinearLayout.LayoutParams(dp(1),dp(29));dl.setMargins(dp(20),dp(8),dp(18),0);timeRow.addView(divider,dl);
         TextView date=text(new SimpleDateFormat("M月d日  EEEE",Locale.CHINA).format(new Date()),14,0xb3ffffff);
@@ -253,8 +262,8 @@ public class MainActivity extends Activity {
     }
     View tile(final ResolveInfo r,final String area,final int index) {
         FrameLayout wrap=new FrameLayout(this);wrap.setClipChildren(false);wrap.setClipToPadding(false);
-        FrameLayout card=new FrameLayout(this);card.setFocusable(true);card.setClickable(true);card.setId(View.generateViewId());
-        card.setBackground(rounded(0xff25252b,0xff1a1a20,0,24));card.setClipToOutline(true);
+        FrameLayout card=new RoundedFrameLayout(this,dp(24));card.setFocusable(true);card.setClickable(true);card.setId(View.generateViewId());
+        card.setBackground(rounded(0xff25252b,0xff1a1a20,0,24));AndroidCompat.clipToOutline(card);
         FrameLayout.LayoutParams cl=new FrameLayout.LayoutParams(dp(232),dp(145),Gravity.TOP|Gravity.CENTER_HORIZONTAL);cl.topMargin=dp(14);wrap.addView(card,cl);
         card.setBackground(rounded(0xff25252b,0xff1a1a20,0,24));
         final TvIcon artwork=new TvIcon(this,pkg(r),r.loadLabel(getPackageManager()).toString());card.addView(artwork,new FrameLayout.LayoutParams(-1,-1));
@@ -263,7 +272,7 @@ public class MainActivity extends Activity {
         name.setEllipsize(android.text.TextUtils.TruncateAt.END);
         FrameLayout.LayoutParams nl=new FrameLayout.LayoutParams(dp(260),dp(34),Gravity.TOP|Gravity.CENTER_HORIZONTAL);nl.topMargin=dp(178);wrap.addView(name,nl);
         card.setOnFocusChangeListener((v,f)->{
-            artwork.setFocusedArtwork(f);v.setElevation(f?dp(14):dp(3));v.setRotationY(f?-1.2f:0);
+            artwork.setFocusedArtwork(f);AndroidCompat.elevation(v,f?dp(14):dp(3));v.setRotationY(f?-1.2f:0);
             v.animate().scaleX(f?1.09f:1).scaleY(f?1.09f:1).rotationY(0).setDuration(f?260:180)
                 .setInterpolator(new android.view.animation.OvershootInterpolator(f?1.2f:0)).start();
             name.animate().alpha(f?1:.78f).setDuration(180).start();
@@ -307,7 +316,7 @@ public class MainActivity extends Activity {
     }
 
     Drawable loadBanner(ResolveInfo r){
-        try{Drawable d=r.activityInfo.loadBanner(getPackageManager());if(d==null)d=r.activityInfo.applicationInfo.loadBanner(getPackageManager());
+        try{Drawable d=AndroidCompat.loadBanner(r,getPackageManager());
             if(d!=null&&d.getIntrinsicWidth()<d.getIntrinsicHeight()*1.35f)return null;return d;}catch(Exception e){return null;}
     }
     void animateTheme(int color){
@@ -335,7 +344,7 @@ public class MainActivity extends Activity {
         for(int n=0;n<4;n++){
             final int slot=n;LinearLayout option=new LinearLayout(this);option.setOrientation(1);option.setPadding(dp(7),dp(7),dp(7),dp(12));option.setFocusable(true);
             option.setBackground(rounded(0x102d303e,0x102d303e,0,16));
-            FrameLayout preview=new FrameLayout(this);preview.setBackground(bg(0xff242630,0));preview.setClipToOutline(true);option.addView(preview,new LinearLayout.LayoutParams(-1,dp(112)));
+            FrameLayout preview=new RoundedFrameLayout(this,dp(18));preview.setBackground(bg(0xff242630,0));AndroidCompat.clipToOutline(preview);option.addView(preview,new LinearLayout.LayoutParams(-1,dp(112)));
             if(n<dock.size()){
                 ResolveInfo app=dock.get(n);FrameLayout.LayoutParams artLp=new FrameLayout.LayoutParams(-1,-1,Gravity.CENTER);
                 preview.addView(new TvIcon(this,pkg(app),app.loadLabel(getPackageManager()).toString()),artLp);
@@ -384,8 +393,8 @@ public class MainActivity extends Activity {
         catch(Exception e){settings();}
     }
     void showSettings(){
-        popup(topViews.get(2),new String[]{"壁纸与外观",showSystem?"应用范围：全部":"应用范围：精简","电视系统设置","关于与开源许可"},new Runnable[]{
-            ()->wallpapers(),()->{showSystem=!showSystem;saveFocus();discover();build();},()->settings(),()->about()});
+        popup(topViews.get(2),new String[]{"壁纸与外观",showSystem?"应用范围：全部":"应用范围：精简","电视初始化与精简","电视系统设置","关于与开源许可"},new Runnable[]{
+            ()->wallpapers(),()->{showSystem=!showSystem;saveFocus();discover();build();},()->startActivity(new Intent(this,DeviceSetupActivity.class)),()->settings(),()->about()});
     }
     void popup(View anchor,String[] labels,Runnable[] actions){popup(anchor,labels,actions,245);}
     void popup(View anchor,String[] labels,Runnable[] actions,int widthDp){
@@ -393,7 +402,7 @@ public class MainActivity extends Activity {
         LinearLayout panel=new LinearLayout(this);panel.setOrientation(1);panel.setPadding(dp(9),dp(9),dp(9),dp(9));
         panel.setBackground(new GlassSurface(this,panel,false,22));
         PopupWindow window=new PopupWindow(panel,dp(widthDp),-2,true);openPopup=window;
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));window.setOutsideTouchable(true);window.setElevation(dp(20));
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));window.setOutsideTouchable(true);AndroidCompat.popupElevation(window,dp(20));
         for(int n=0;n<labels.length;n++){
             final int index=n;TextView item=text(labels[n],16,0xfff4f4f8);item.setSingleLine(true);item.setEllipsize(android.text.TextUtils.TruncateAt.END);item.setGravity(Gravity.CENTER_VERTICAL);item.setPadding(dp(16),0,dp(12),0);item.setFocusable(true);
             item.setBackground(rounded(0x00303038,0x00303038,0,12));panel.addView(item,new LinearLayout.LayoutParams(-1,dp(48)));
@@ -455,7 +464,7 @@ public class MainActivity extends Activity {
         View active=null;
         for(int n=0;n<keys.length;n++){
             final String key=keys[n];LinearLayout option=new LinearLayout(this);option.setOrientation(1);option.setPadding(dp(6),dp(6),dp(6),dp(8));option.setFocusable(true);option.setBackground(rounded(0x102d303e,0x102d303e,0,16));
-            Backdrop preview=new Backdrop(key);preview.setBackground(bg(Color.BLACK,0));preview.setClipToOutline(true);option.addView(preview,new LinearLayout.LayoutParams(-1,dp(92)));
+            FrameLayout preview=new RoundedFrameLayout(this,dp(18));preview.setBackground(bg(Color.BLACK,0));AndroidCompat.clipToOutline(preview);preview.addView(new Backdrop(key),new FrameLayout.LayoutParams(-1,-1));option.addView(preview,new LinearLayout.LayoutParams(-1,dp(92)));
             TextView name=text(names[n],14,Color.WHITE);name.setGravity(17);name.setPadding(0,dp(10),0,0);option.addView(name);
             TextView check=text(mode.equals(key)?"正在使用":"",11,0xffaeb8cc);check.setGravity(17);option.addView(check);
             LinearLayout.LayoutParams op=new LinearLayout.LayoutParams(0,-1,1);op.setMargins(dp(4),0,dp(4),0);row.addView(option,op);

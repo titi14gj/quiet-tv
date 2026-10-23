@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.QuietTV" parent="android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:colorAccent">#DEE5F8</item>
+    </style>
+</resources>

@@ -393,8 +393,8 @@ public class MainActivity extends Activity {
         catch(Exception e){settings();}
     }
     void showSettings(){
-        popup(topViews.get(2),new String[]{"壁纸与外观",showSystem?"应用范围：全部":"应用范围：精简","电视系统设置","关于与开源许可"},new Runnable[]{
-            ()->wallpapers(),()->{showSystem=!showSystem;saveFocus();discover();build();},()->settings(),()->about()});
+        popup(topViews.get(2),new String[]{"壁纸与外观",showSystem?"应用范围：全部":"应用范围：精简","电视初始化与精简","电视系统设置","关于与开源许可"},new Runnable[]{
+            ()->wallpapers(),()->{showSystem=!showSystem;saveFocus();discover();build();},()->startActivity(new Intent(this,DeviceSetupActivity.class)),()->settings(),()->about()});
     }
     void popup(View anchor,String[] labels,Runnable[] actions){popup(anchor,labels,actions,245);}
     void popup(View anchor,String[] labels,Runnable[] actions,int widthDp){

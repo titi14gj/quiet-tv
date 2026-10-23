@@ -8,7 +8,8 @@ root=Path(__file__).resolve().parent.parent
 sdk=Path(os.environ.get('ANDROID_HOME',os.environ.get('ANDROID_SDK_ROOT',str(Path.home()/'Library/Android/sdk'))))
 api=ET.parse(sdk/'platforms/android-33/data/api-versions.xml').getroot()
 classes={c.get('name'):c for c in api.findall('class')}
-dump=subprocess.check_output([str(sdk/'build-tools/33.0.0/dexdump'),'-d',str(root/'build/dex/classes.dex')],text=True)
+# DEX strings use modified UTF-8 (including NUL); method descriptors are ASCII.
+dump=subprocess.check_output([str(sdk/'build-tools/33.0.0/dexdump'),'-d',str(root/'build/dex/classes.dex')],text=True,encoding='utf-8',errors='replace')
 parents={};caller=None
 for line in dump.splitlines():
  m=re.search(r"Class descriptor\s+: 'L([^;]+);'",line)

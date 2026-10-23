@@ -22,6 +22,12 @@ public class TvAdmin {
         return (Integer)call(pm,"getPackageUid",new Class[]{String.class,int.class},pkg,0);
     }
     public static void main(String[] args)throws Exception{
+        if(args.length>0&&args[0].equals("home-resolve")){
+            Object pm=Class.forName("android.app.ActivityThread").getMethod("getPackageManager").invoke(null);
+            Intent home=new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME).addCategory(Intent.CATEGORY_DEFAULT);
+            ResolveInfo info=(ResolveInfo)call(pm,"resolveIntent",new Class[]{Intent.class,String.class,int.class,int.class},home,null,0,0);
+            System.out.println("resolved="+(info==null?"none":info.activityInfo.packageName+"/"+info.activityInfo.name));return;
+        }
         if(args.length>0&&(args[0].equals("homes")||args[0].equals("home-set"))){
             Object pm=Class.forName("android.app.ActivityThread").getMethod("getPackageManager").invoke(null);
             List<ResolveInfo> homes=new ArrayList<>();

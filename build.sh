@@ -14,8 +14,8 @@ mkdir -p build/classes build/dex build/generated
 rm -rf build/classes build/dex build/generated
 mkdir -p build/classes build/dex build/generated
 "$BT/aapt" package -f -m -M AndroidManifest.xml -S res -A assets -I "$SDK/platforms/android-33/android.jar" -J build/generated
-javac -encoding UTF-8 -source 8 -target 8 -bootclasspath "$SDK/platforms/android-33/android.jar:$BT/core-lambda-stubs.jar" -d build/classes src/cn/quiet/tv/*.java build/generated/cn/quiet/tv/R.java
-"$BT/d8" --lib "$SDK/platforms/android-33/android.jar" --min-api 19 --output build/dex build/classes/cn/quiet/tv/*.class
+javac -encoding UTF-8 -source 8 -target 8 -bootclasspath "$SDK/platforms/android-33/android.jar:$BT/core-lambda-stubs.jar" -d build/classes src/cn/quiet/tv/*.java admin-src/cn/quiet/tools/*.java build/generated/cn/quiet/tv/R.java
+"$BT/d8" --lib "$SDK/platforms/android-33/android.jar" --min-api 19 --output build/dex build/classes/cn/quiet/tv/*.class build/classes/cn/quiet/tools/*.class
 "$BT/aapt" package -f -M AndroidManifest.xml -S res -A assets -I "$SDK/platforms/android-33/android.jar" -F build/unsigned.apk
 (cd build/dex && zip -q -j ../unsigned.apk classes.dex)
 "$BT/zipalign" -f 4 build/unsigned.apk build/aligned.apk

@@ -88,6 +88,7 @@ public class MainActivity extends Activity {
         for(String cat : new String[]{Intent.CATEGORY_LEANBACK_LAUNCHER,Intent.CATEGORY_LAUNCHER}) {
             Intent i = new Intent(Intent.ACTION_MAIN).addCategory(cat);
             for(ResolveInfo r : getPackageManager().queryIntentActivities(i,0)) {
+                if(!AppLaunch.available(r))continue;
                 String p = pkg(r);
                 if(!p.equals(getPackageName()) && !p.equals("com.helios.launcher")
                     && !p.equals("com.android.packageinstaller") && !p.equals("com.helios.task")
@@ -322,7 +323,8 @@ public class MainActivity extends Activity {
         if(allAppsOpen&&!allViews.isEmpty())focusAt(allViews,allIndex);else {focusAt(dockViews,0);if(dockViews.isEmpty())topViews.get(0).requestFocus();}
     }
     void launch(ResolveInfo r) {
-        saveFocus();try{startActivity(new Intent(Intent.ACTION_MAIN).setComponent(new ComponentName(pkg(r),r.activityInfo.name)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
+        saveFocus();try{Intent intent=AppLaunch.resolve(getPackageManager(),pkg(r));
+            if(intent==null)throw new ActivityNotFoundException();startActivity(intent);}
         catch(Exception e){Toast.makeText(this,"暂时无法打开该应用",0).show();}
     }
     void editDock(final ResolveInfo r) {

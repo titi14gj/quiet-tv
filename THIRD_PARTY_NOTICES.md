@@ -29,3 +29,7 @@
 ## 厂商接口与截图
 
 WhaleyInputs 为测试设备的适配代码；仓库不包含原厂 APK、框架 JAR、固件镜像或反编译代码。截图只展示桌面测试状态，不能当作其他电视的兼容性保证。
+
+## 2026-11-02 逻辑同步
+
+参考 CleanYourTV 提交 `6e8615eb0be0e843ceeebedae246d69f3e0a88d7` 的 AppAdapter 应用入口过滤及启动类别/任务标志，按原生架构适配为 AppLaunch；未替换上游 UI 或资源。许可仍为上述 MIT，详细范围见 docs/upstream-sync/2026-11-02.md。
